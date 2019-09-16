@@ -9,10 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
@@ -20,6 +17,7 @@ import java.util.ResourceBundle;
 
 public class MainFormController implements Initializable {
 
+    public Button btnUpdate;
     @FXML
     private TextField txtName;
     @FXML
@@ -39,6 +37,7 @@ public class MainFormController implements Initializable {
 
     private ObservableList<Category> categorys ;
     private ObservableList<Item> items ;
+    private Item selectedItems;
 
     /**
      *
@@ -47,11 +46,25 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void saveAction(ActionEvent actionEvent) {
-
+        if ((txtName.getText().isEmpty()) || (txtPrice.getText().equals("")) || (coboxCategory.getValue()==null)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+            alert.setContentText("Diisi ya!");
+            alert.showAndWait();
+        }
+        else{
+            items.add(new Item(txtName.getText(),Integer.valueOf(txtPrice.getText()),coboxCategory.getValue()));
+            resetAction(actionEvent);
+        }
     }
+
 
     @FXML
     private void resetAction(ActionEvent actionEvent) {
+        txtName.clear();
+        txtPrice.clear();
+        coboxCategory.setValue(null);
     }
 
     @FXML
@@ -60,12 +73,33 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void saveCateAction(ActionEvent actionEvent) {
+        if ((txtCateName.getText().equals(""))) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+            alert.setContentText("Diisi ya!");
+            alert.showAndWait();
+        }
+        else{
+
+            categorys.add(new Category(txtCateName.getText()));
+
+        }
     }
 
     @FXML
     private void tableClicked(MouseEvent mouseEvent) {
+        selectedItems = tableDepartment.getSelectionModel().getSelectedItem();
+        if(selectedItems!=null){
+            txtName.setText(tableDepartment.getSelectionModel().getSelectedItem().getName());
+            txtPrice.setText(tableDepartment.getSelectionModel().getSelectedItem().getPrice()+"");
+            coboxCategory.setValue((Category)tableDepartment.getSelectionModel().getSelectedItem().getCategory());
 
-    }
+            btnUpdate.setDisable(false);
+
+        }
+
+}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
