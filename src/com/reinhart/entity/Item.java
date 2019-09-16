@@ -6,7 +6,7 @@ public class Item {
     private double price;
     private  Category category;
 
-    public Item(String name, double price, Category category) {
+    public Item() {
         this.name = name;
         this.price = price;
         this.category = category;
@@ -24,7 +24,7 @@ public class Item {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

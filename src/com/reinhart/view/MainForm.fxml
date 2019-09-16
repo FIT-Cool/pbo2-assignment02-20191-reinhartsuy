@@ -61,7 +61,7 @@
                               <ChoiceBox fx:id="coboxCategory" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#saveAction" text="Save" />
+                                    <Button fx:id="btnSave" mnemonicParsing="false" onAction="#saveAction" text="Save" />
                                     <Button mnemonicParsing="false" onAction="#resetAction" text="Reset" />
                                     <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#updateAction" text="Update" />
                                  </children>

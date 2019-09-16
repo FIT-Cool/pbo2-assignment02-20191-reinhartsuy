@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 public class MainFormController implements Initializable {
 
     public Button btnUpdate;
+    public Button btnSave;
     @FXML
     private TextField txtName;
     @FXML
@@ -36,8 +37,9 @@ public class MainFormController implements Initializable {
     private TableColumn<Item, String > col03;
 
     private ObservableList<Category> categorys ;
-    private ObservableList<Item> items ;
+    private ObservableList<Item> Item ;
     private Item selectedItems;
+    int hitung;
 
     /**
      *
@@ -46,16 +48,31 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void saveAction(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         if ((txtName.getText().isEmpty()) || (txtPrice.getText().equals("")) || (coboxCategory.getValue()==null)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText(null);
             alert.setContentText("Diisi ya!");
             alert.showAndWait();
         }
         else{
-            items.add(new Item(txtName.getText(),Integer.valueOf(txtPrice.getText()),coboxCategory.getValue()));
-            resetAction(actionEvent);
+            Item i = new Item();
+            i.setName(txtName.getText());
+            hitung = (int) Item.stream().filter(p -> p.getName().equalsIgnoreCase(txtName.getText())).count();
+            if (hitung > 0 ){
+                alert.setTitle("Error");
+                alert.setContentText("Duplicate item name");
+                alert.show();
+            } else {
+                i.setName(txtName.getText().trim());
+                i.setPrice((txtPrice.getText().trim()));
+                i.setCategory(coboxCategory.getValue());
+                Item.add(i);
+            }
+
+
+
+
         }
     }
 
@@ -64,25 +81,47 @@ public class MainFormController implements Initializable {
     private void resetAction(ActionEvent actionEvent) {
         txtName.clear();
         txtPrice.clear();
+        txtCateName.clear();
         coboxCategory.setValue(null);
+        btnSave.setDisable(true);
+        btnUpdate.setDisable(false);
     }
 
     @FXML
     private void updateAction(ActionEvent actionEvent) {
+        Item i = tableDepartment.getSelectionModel().getSelectedItem();
+        i.setName(txtName.getText());
+        i.setPrice(txtPrice.getText());
+        i.setCategory(coboxCategory.getValue());
+        tableDepartment.refresh();
+        btnSave.setDisable(false);
+        btnUpdate.setDisable(true);
+
     }
 
     @FXML
     private void saveCateAction(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         if ((txtCateName.getText().equals(""))) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText(null);
             alert.setContentText("Diisi ya!");
             alert.showAndWait();
         }
         else{
+            Category c = new Category();
+            c.setName(txtCateName.getText());
+            hitung = (int) categorys.stream().filter(p -> p.getName().equalsIgnoreCase(txtCateName.getText())).count();
+            if (hitung > 0){
+                alert.setTitle("Error");
+                alert.setContentText("Duplicate");
+                alert.show();
+            }
+            else {
+                categorys.add(c);
+                txtCateName.clear();
+            }
 
-            categorys.add(new Category(txtCateName.getText()));
 
         }
     }
@@ -104,9 +143,9 @@ public class MainFormController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         categorys = FXCollections.observableArrayList();
-        items = FXCollections.observableArrayList();
+        Item = FXCollections.observableArrayList();
         coboxCategory.setItems(categorys);
-        tableDepartment.setItems(items);
+        tableDepartment.setItems(Item);
         col01.setCellValueFactory(data -> {
             Item i = data.getValue();
             return new SimpleStringProperty(i.getName());
